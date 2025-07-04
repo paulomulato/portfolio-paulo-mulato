@@ -3,18 +3,31 @@
 <html lang="pt-BR">
 <head>
 <style>
-  .project-image img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
+  .project-image {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc; /* Cor de fundo suave */
+    padding: 12px;
     border-radius: 8px;
-    display: block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+    overflow: hidden;
   }
   
-  .project-image {
-    overflow: hidden;
-    border-radius: 8px;
-    height: 200px; /* Defina uma altura fixa ou use min-height */
+  .project-image img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+  }
+  
+  .project-card:hover .project-image img {
+    transform: scale(1.03);
   }
 </style>
 <meta charset="utf-8"/>
