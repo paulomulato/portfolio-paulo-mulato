@@ -498,15 +498,20 @@ body {
     position: relative;
     overflow: hidden;
     padding: var(--spacing-md); /* opcional: dá um espaçamento interno bonito */
+    border-radius: 8px;
+    height: 200px; /* ou use min-height */
 }
 
 .project-image img {
     width: 100%;
-    height: auto; /* deixa a altura proporcional ao conteúdo */
-    object-fit: none /*contain */;
+    height: 100%; /* deixa a altura proporcional ao conteúdo */
+    object-fit: cover /*none /*contain */;
     display: block;
     border-radius: 12px; /* opcional: deixa cantos arredondados como na imagem 1 */
+    transition: transform 0.3s ease;
+    display: block;
 }
+
 
 .project-image::before {
     content: '';
@@ -521,7 +526,7 @@ body {
 }
 
 .project-card:hover .project-image::before {
-    transform: translateX(100%);
+    transform: scale(1.05) /*translateX(100%);
 }
 
 .project-image i {
