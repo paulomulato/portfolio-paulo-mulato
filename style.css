@@ -479,7 +479,7 @@ body {
 .project-image img {
     width: 100%;
     height: auto; /* deixa a altura proporcional ao conteúdo */
-    object-fit: contain;
+    object-fit: none /*contain */;
     display: block;
     border-radius: 12px; /* opcional: deixa cantos arredondados como na imagem 1 */
 }
