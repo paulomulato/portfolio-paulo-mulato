@@ -467,20 +467,21 @@ body {
 }
 
 .project-image {
-    height: 200px; /* Altura fixa para o contêiner da imagem */
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden; /* Garante que a imagem não transborde */
+    overflow: hidden;
+    padding: var(--spacing-md); /* opcional: dá um espaçamento interno bonito */
 }
 
 .project-image img {
-    width: 100%; /* Garante que a imagem ocupe 100% da largura do contêiner */
-    height: 100%; /* Garante que a imagem ocupe 100% da altura do contêiner */
-    object-fit: contain; /* Redimensiona a imagem para caber no contêiner, mantendo a proporção */
-    display: block; /* Remove espaço extra abaixo da imagem */
+    width: 100%;
+    height: auto; /* deixa a altura proporcional ao conteúdo */
+    object-fit: contain;
+    display: block;
+    border-radius: 12px; /* opcional: deixa cantos arredondados como na imagem 1 */
 }
 
 .project-image::before {
