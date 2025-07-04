@@ -490,6 +490,7 @@ body {
   border-radius: 12px;
 }
 
+/* Container da imagem */
 .project-image {
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
     display: flex;
@@ -497,15 +498,19 @@ body {
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: var(--spacing-md); /* opcional: dá um espaçamento interno bonito */
+    padding: var(--spacing-md); /* espaçamento interno */
+    border-radius: 8px; /* bordas arredondadas do container */
+    height: 200px; /* altura fixa para uniformidade */
 }
 
+/* Estilo da imagem em si */
 .project-image img {
     width: 100%;
-    height: auto; /* deixa a altura proporcional ao conteúdo */
-    object-fit: none /*contain */;
+    height: 100%;
+    object-fit: contain; /* mantém proporção sem cortar */
     display: block;
-    border-radius: 12px; /* opcional: deixa cantos arredondados como na imagem 1 */
+    border-radius: 12px; /* bordas arredondadas da imagem */
+    transition: transform 0.3s ease;
 }
 
 .project-image::before {
