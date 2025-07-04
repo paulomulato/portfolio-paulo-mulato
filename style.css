@@ -258,7 +258,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('../images/data-background.jpg') center/cover;
+    background: url('../s/data-background.jpg') center/cover;
     opacity: 0.05;
     z-index: 1;
 }
@@ -318,7 +318,7 @@ body {
     flex-wrap: wrap;
 }
 
-.hero-image {
+.hero- {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -466,7 +466,7 @@ body {
     box-shadow: var(--shadow-xl);
 }
 
-.project-image-full {
+.project--full {
   background: #ffffff;
   border-radius: 16px;
   padding: 1rem;
@@ -491,25 +491,23 @@ body {
 }
 
 .project-image {
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    height: 200px;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden;
-    padding: var(--spacing-md); /* opcional: dá um espaçamento interno bonito */
-    border-radius: 8px;
-    height: 200px; /* ou use min-height */
 }
 
 .project-image img {
-    width: 100%;
-    height: 100%; /* deixa a altura proporcional ao conteúdo */
-    object-fit: cover /*none /*contain */;
-    display: block;
-    border-radius: 12px; /* opcional: deixa cantos arredondados como na imagem 1 */
-    transition: transform 0.3s ease;
-    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
 }
 
 
