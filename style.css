@@ -1,0 +1,515 @@
+/* ===================================
+   IMPLEMENTAÇÃO TEMA ESCURO
+   Portfólio Paulo R. Mulato
+   =================================== */
+
+/* Variáveis CSS para Tema Claro (padrão) */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --accent-primary: #3b82f6;
+  --accent-secondary: #8b5cf6;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-bg: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* Variáveis CSS para Tema Escuro */
+:root[data-theme="dark"] {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #808080;
+  --accent-primary: #60a5fa;
+  --accent-secondary: #a78bfa;
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --card-bg: #1a1a1a;
+  --nav-bg: rgba(15, 15, 15, 0.95);
+}
+
+/* ===================================
+   ESTILOS GLOBAIS
+   =================================== */
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ===================================
+   NAVEGAÇÃO
+   =================================== */
+
+.header {
+  background-color: var(--nav-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-logo h2 {
+  color: var(--text-primary);
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-primary);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-primary);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Toggle de Tema */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--border-color);
+  border-radius: 50px;
+  width: 50px;
+  height: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 1rem;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent-primary);
+}
+
+.theme-toggle .sun-icon,
+.theme-toggle .moon-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.theme-toggle .sun-icon {
+  left: 8px;
+  color: #fbbf24;
+  opacity: 1;
+}
+
+.theme-toggle .moon-icon {
+  right: 8px;
+  color: #60a5fa;
+  opacity: 0;
+}
+
+.theme-toggle.dark .sun-icon {
+  opacity: 0;
+}
+
+.theme-toggle.dark .moon-icon {
+  opacity: 1;
+}
+
+/* ===================================
+   SEÇÃO HERO
+   =================================== */
+
+.hero {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  min-height: 100vh;
+}
+
+.hero-title {
+  color: var(--text-primary);
+}
+
+.hero-subtitle {
+  color: var(--accent-primary);
+}
+
+.hero-description {
+  color: var(--text-secondary);
+}
+
+.hero-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+.hero-card i {
+  color: var(--accent-primary);
+}
+
+/* ===================================
+   BOTÕES
+   =================================== */
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+  border: 2px solid var(--accent-primary);
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-secondary);
+  border: 2px solid var(--accent-secondary);
+}
+
+.btn-secondary:hover {
+  background: var(--accent-secondary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
+
+/* ===================================
+   SEÇÕES
+   =================================== */
+
+.about,
+.projects,
+.contact {
+  background-color: var(--bg-primary);
+}
+
+.section-title {
+  color: var(--text-primary);
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+}
+
+/* ===================================
+   SEÇÃO SOBRE
+   =================================== */
+
+.about-description {
+  color: var(--text-secondary);
+}
+
+.stat-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px var(--shadow-color);
+}
+
+.stat-number {
+  color: var(--accent-primary);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+.skill-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.skill-item:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.skill-item i {
+  color: var(--accent-primary);
+}
+
+.skill-item:hover i {
+  color: white;
+}
+
+/* ===================================
+   PROJETOS
+   =================================== */
+
+.project-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px var(--shadow-color);
+}
+
+.project-title {
+  color: var(--text-primary);
+}
+
+.project-description {
+  color: var(--text-secondary);
+}
+
+.project-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.project-link:hover {
+  color: var(--accent-secondary);
+  transform: translateX(5px);
+}
+
+.project-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-image::before {
+  opacity: 1;
+}
+
+/* ===================================
+   FORMULÁRIO DE CONTATO
+   =================================== */
+
+.contact-form {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  color: var(--text-muted);
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  background: var(--card-bg);
+  padding: 0 0.5rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label {
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--accent-primary);
+}
+
+.contact-info h3 {
+  color: var(--text-primary);
+}
+
+.contact-info p {
+  color: var(--text-secondary);
+}
+
+.contact-method {
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.contact-method:hover {
+  color: var(--accent-primary);
+  transform: translateX(5px);
+}
+
+.contact-method i {
+  color: var(--accent-primary);
+}
+
+.contact-method a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.contact-method a:hover {
+  color: var(--accent-secondary);
+}
+
+/* ===================================
+   RODAPÉ
+   =================================== */
+
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.footer h3 {
+  color: var(--text-primary);
+}
+
+.footer p {
+  color: var(--text-secondary);
+}
+
+.footer-link {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+  background: var(--accent-primary);
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* ===================================
+   ANIMAÇÕES
+   =================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ===================================
+   RESPONSIVIDADE
+   =================================== */
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 40px;
+    height: 25px;
+    margin-left: 0.5rem;
+  }
+  
+  .theme-toggle .sun-icon,
+  .theme-toggle .moon-icon {
+    font-size: 12px;
+  }
+  
+  .theme-toggle .sun-icon {
+    left: 6px;
+  }
+  
+  .theme-toggle .moon-icon {
+    right: 6px;
+  }
+}
+
+/* ===================================
+   PREFERÊNCIA DO SISTEMA
+   =================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-muted: #808080;
+    --accent-primary: #60a5fa;
+    --accent-secondary: #a78bfa;
+    --border-color: #404040;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --card-bg: #1a1a1a;
+    --nav-bg: rgba(15, 15, 15, 0.95);
+  }
+}
+
