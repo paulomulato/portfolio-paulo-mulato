@@ -1,367 +1,356 @@
-// Aguarda o carregamento completo do DOM
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Elementos do DOM
-    const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const header = document.querySelector('.header');
-    const contactForm = document.getElementById('contactForm');
-    
-    // Toggle do menu mobile
-    navToggle.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-        navToggle.classList.toggle('active');
-    });
-    
-    // Fechar menu ao clicar em um link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            navMenu.classList.remove('active');
-            navToggle.classList.remove('active');
-        });
-    });
-    
-    // Navegação suave
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                const headerHeight = header.offsetHeight;
-                const targetPosition = targetSection.offsetTop - headerHeight;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-    // Efeito de scroll no header
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 100) {
-            header.style.background = 'rgba(255, 255, 255, 0.98)';
-            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-        } else {
-            header.style.background = 'rgba(255, 255, 255, 0.95)';
-            header.style.boxShadow = 'none';
-        }
-    });
-    
-    // Animação de elementos ao entrar na viewport
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-    
-    // Elementos para animar
-    const animateElements = document.querySelectorAll('.project-card, .stat-item, .skill-item');
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-    
-    // Contador animado para estatísticas
-    function animateCounter(element, target, duration = 2000) {
-        let start = 0;
-        const increment = target / (duration / 16);
-        
-        function updateCounter() {
-            start += increment;
-            if (start < target) {
-                element.textContent = Math.floor(start) + (target === 100 ? '%' : '+');
-                requestAnimationFrame(updateCounter);
-            } else {
-                element.textContent = target + (target === 100 ? '%' : '+');
-            }
-        }
-        
-        updateCounter();
+/**
+ * IMPLEMENTAÇÃO DO TOGGLE DE TEMA ESCURO
+ * Portfólio Paulo R. Mulato
+ */
+
+class ThemeToggle {
+  constructor() {
+    this.theme = this.getInitialTheme();
+    this.init();
+  }
+
+  /**
+   * Determina o tema inicial baseado em:
+   * 1. Preferência salva no localStorage
+   * 2. Preferência do sistema (prefers-color-scheme)
+   * 3. Padrão: light
+   */
+  getInitialTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme;
     }
+
+    // Verifica preferência do sistema
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+
+    return 'light';
+  }
+
+  /**
+   * Inicializa o toggle de tema
+   */
+  init() {
+    this.setTheme(this.theme);
+    this.createToggleButton();
+    this.bindEvents();
+    this.watchSystemPreference();
+  }
+
+  /**
+   * Cria o botão de toggle no menu de navegação
+   */
+  createToggleButton() {
+    const toggle = document.createElement('button');
+    toggle.className = 'theme-toggle';
+    toggle.setAttribute('aria-label', 'Alternar tema');
+    toggle.setAttribute('title', 'Alternar entre tema claro e escuro');
+    toggle.innerHTML = `
+      <i class="fas fa-sun sun-icon" aria-hidden="true"></i>
+      <i class="fas fa-moon moon-icon" aria-hidden="true"></i>
+    `;
     
-    // Observer para estatísticas
-    const statsObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const statNumber = entry.target.querySelector('.stat-number');
-                const targetValue = parseInt(statNumber.textContent);
-                animateCounter(statNumber, targetValue);
-                statsObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
+    // Adiciona o botão ao menu de navegação
+    const navMenu = document.querySelector('.nav-menu');
+    if (navMenu) {
+      navMenu.appendChild(toggle);
+      this.toggleButton = toggle;
+    } else {
+      console.warn('Menu de navegação não encontrado');
+    }
+  }
+
+  /**
+   * Vincula eventos aos elementos
+   */
+  bindEvents() {
+    if (this.toggleButton) {
+      this.toggleButton.addEventListener('click', () => {
+        this.toggleTheme();
+      });
+
+      // Adiciona suporte a teclado
+      this.toggleButton.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.toggleTheme();
+        }
+      });
+    }
+  }
+
+  /**
+   * Observa mudanças na preferência do sistema
+   */
+  watchSystemPreference() {
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', (e) => {
+        // Só aplica a preferência do sistema se não houver preferência salva
+        if (!localStorage.getItem('theme')) {
+          const newTheme = e.matches ? 'dark' : 'light';
+          this.setTheme(newTheme);
+        }
+      });
+    }
+  }
+
+  /**
+   * Define o tema atual
+   * @param {string} theme - 'light' ou 'dark'
+   */
+  setTheme(theme) {
+    // Valida o tema
+    if (theme !== 'light' && theme !== 'dark') {
+      console.warn(`Tema inválido: ${theme}. Usando 'light' como padrão.`);
+      theme = 'light';
+    }
+
+    // Aplica o tema ao documento
+    document.documentElement.setAttribute('data-theme', theme);
+    this.theme = theme;
     
-    const statItems = document.querySelectorAll('.stat-item');
-    statItems.forEach(item => {
-        statsObserver.observe(item);
+    // Salva a preferência
+    localStorage.setItem('theme', theme);
+    
+    // Atualiza o botão de toggle
+    if (this.toggleButton) {
+      this.toggleButton.classList.toggle('dark', theme === 'dark');
+      
+      // Atualiza o aria-label para acessibilidade
+      const newLabel = theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro';
+      this.toggleButton.setAttribute('aria-label', newLabel);
+      this.toggleButton.setAttribute('title', newLabel);
+    }
+
+    // Dispara evento customizado para outros scripts
+    document.dispatchEvent(new CustomEvent('themeChanged', {
+      detail: { theme }
+    }));
+
+    // Log para debug
+    console.log(`Tema alterado para: ${theme}`);
+  }
+
+  /**
+   * Alterna entre os temas
+   */
+  toggleTheme() {
+    const newTheme = this.theme === 'light' ? 'dark' : 'light';
+    this.setTheme(newTheme);
+
+    // Adiciona uma pequena animação ao botão
+    if (this.toggleButton) {
+      this.toggleButton.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        this.toggleButton.style.transform = 'scale(1)';
+      }, 150);
+    }
+  }
+
+  /**
+   * Retorna o tema atual
+   * @returns {string} Tema atual ('light' ou 'dark')
+   */
+  getCurrentTheme() {
+    return this.theme;
+  }
+
+  /**
+   * Remove o toggle (útil para cleanup)
+   */
+  destroy() {
+    if (this.toggleButton) {
+      this.toggleButton.remove();
+    }
+  }
+}
+
+/**
+ * ANIMAÇÕES DE SCROLL
+ * Adiciona animações quando elementos entram na viewport
+ */
+class ScrollAnimations {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.createObserver();
+    this.observeElements();
+  }
+
+  createObserver() {
+    const options = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-on-scroll');
+          this.observer.unobserve(entry.target);
+        }
+      });
+    }, options);
+  }
+
+  observeElements() {
+    const elements = document.querySelectorAll(`
+      .section-header,
+      .about-text,
+      .stat-item,
+      .skill-item,
+      .project-card,
+      .contact-info,
+      .contact-form
+    `);
+
+    elements.forEach(el => {
+      this.observer.observe(el);
     });
+  }
+}
+
+/**
+ * SMOOTH SCROLL
+ * Adiciona scroll suave para links de navegação
+ */
+class SmoothScroll {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
     
-    // Formulário de contato
-    contactForm.addEventListener('submit', function(e) {
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
         
-        // Obter dados do formulário
-        const formData = new FormData(this);
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const message = formData.get('message');
+        const targetId = link.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
         
-        // Validação básica
-        if (!name || !email || !message) {
-            showNotification('Por favor, preencha todos os campos.', 'error');
-            return;
+        if (targetElement) {
+          const headerHeight = document.querySelector('.header').offsetHeight;
+          const targetPosition = targetElement.offsetTop - headerHeight;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+
+          // Atualiza link ativo
+          this.updateActiveLink(link);
         }
-        
-        if (!isValidEmail(email)) {
-            showNotification('Por favor, insira um e-mail válido.', 'error');
-            return;
-        }
-        
-        // Simular envio (em produção, conectar com backend)
-        const submitButton = this.querySelector('button[type="submit"]');
-        const originalText = submitButton.innerHTML;
-        
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-        submitButton.disabled = true;
-        
-        setTimeout(() => {
-            showNotification('Mensagem enviada com sucesso! Entrarei em contato em breve.', 'success');
-            this.reset();
-            submitButton.innerHTML = originalText;
-            submitButton.disabled = false;
-        }, 2000);
+      });
     });
-    
-    // Função para validar e-mail
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-    
-    // Sistema de notificações
-    function showNotification(message, type = 'info') {
-        // Remover notificação existente
-        const existingNotification = document.querySelector('.notification');
-        if (existingNotification) {
-            existingNotification.remove();
-        }
-        
-        // Criar nova notificação
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
-                <button class="notification-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-        
-        // Estilos da notificação
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-            color: white;
-            padding: 16px 20px;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            z-index: 10000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            max-width: 400px;
-        `;
-        
-        notification.querySelector('.notification-content').style.cssText = `
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        `;
-        
-        notification.querySelector('.notification-close').style.cssText = `
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 0;
-            margin-left: auto;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Animar entrada
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
-        
-        // Fechar notificação
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', () => {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => notification.remove(), 300);
-        });
-        
-        // Auto-remover após 5 segundos
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 5000);
-    }
-    
-    // Efeito parallax suave no hero
-    window.addEventListener('scroll', function() {
-        const scrolled = window.pageYOffset;
-        const heroCard = document.querySelector('.hero-card');
-        
-        if (heroCard && scrolled < window.innerHeight) {
-            heroCard.style.transform = `translateY(${scrolled * 0.3}px)`;
-        }
+
+    // Atualiza link ativo no scroll
+    this.watchScroll();
+  }
+
+  updateActiveLink(activeLink) {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.classList.remove('active');
     });
-    
-    // Smooth scroll para o indicador de scroll
-    const scrollIndicator = document.querySelector('.scroll-indicator');
-    if (scrollIndicator) {
-        scrollIndicator.addEventListener('click', function() {
-            const aboutSection = document.querySelector('#about');
-            if (aboutSection) {
-                aboutSection.scrollIntoView({ behavior: 'smooth' });
+    activeLink.classList.add('active');
+  }
+
+  watchScroll() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.scrollY + 100;
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${sectionId}`) {
+              link.classList.add('active');
             }
-        });
-    }
-    
-    // Efeito de typing no hero title (opcional)
-    function typeWriter(element, text, speed = 100) {
-        let i = 0;
-        element.textContent = '';
-        
-        function type() {
-            if (i < text.length) {
-                element.textContent += text.charAt(i);
-                i++;
-                setTimeout(type, speed);
-            }
+          });
         }
-        
-        type();
-    }
-    
-    // Aplicar efeito de typing ao nome (descomente se desejar)
-    // const heroName = document.querySelector('.hero-name');
-    // if (heroName) {
-    //     const originalText = heroName.textContent;
-    //     setTimeout(() => typeWriter(heroName, originalText, 150), 1000);
-    // }
-    
-    // Lazy loading para imagens (se houver)
-    const images = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
-        });
+      });
     });
-    
-    images.forEach(img => imageObserver.observe(img));
-    
-    // Adicionar classe para animações CSS quando elementos entram na viewport
-    const fadeElements = document.querySelectorAll('.fade-in');
-    const fadeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in-active');
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    fadeElements.forEach(el => fadeObserver.observe(el));
-    
-    // Preloader (se necessário)
-    window.addEventListener('load', function() {
-        const preloader = document.querySelector('.preloader');
-        if (preloader) {
-            preloader.style.opacity = '0';
-            setTimeout(() => preloader.remove(), 500);
-        }
-    });
-    
-    // Adicionar efeito de hover nos cards de projeto
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-    
-    // Função para detectar dispositivo móvel
-    function isMobile() {
-        return window.innerWidth <= 768;
-    }
-    
-    // Ajustar comportamentos para mobile
-    if (isMobile()) {
-        // Desabilitar alguns efeitos em mobile para melhor performance
-        const parallaxElements = document.querySelectorAll('[data-parallax]');
-        parallaxElements.forEach(el => {
-            el.style.transform = 'none';
-        });
-    }
-    
-    // Adicionar indicador de progresso de scroll
-    function updateScrollProgress() {
-        const scrollTop = window.pageYOffset;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPercent = (scrollTop / docHeight) * 100;
-        
-        let progressBar = document.querySelector('.scroll-progress');
-        if (!progressBar) {
-            progressBar = document.createElement('div');
-            progressBar.className = 'scroll-progress';
-            progressBar.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 0%;
-                height: 3px;
-                background: linear-gradient(90deg, #2563eb, #0ea5e9);
-                z-index: 10001;
-                transition: width 0.1s ease;
-            `;
-            document.body.appendChild(progressBar);
-        }
-        
-        progressBar.style.width = scrollPercent + '%';
-    }
-    
-    window.addEventListener('scroll', updateScrollProgress);
-    
-    console.log('🚀 Portfolio Paulo R. Mulato carregado com sucesso!');
+  }
+}
+
+/**
+ * INICIALIZAÇÃO
+ * Inicializa todos os componentes quando o DOM estiver carregado
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Inicializa o toggle de tema
+  window.themeToggle = new ThemeToggle();
+  
+  // Inicializa animações de scroll
+  new ScrollAnimations();
+  
+  // Inicializa smooth scroll
+  new SmoothScroll();
+
+  // Log de inicialização
+  console.log('🎨 Sistema de tema escuro inicializado');
+  console.log('✨ Animações de scroll ativadas');
+  console.log('🔗 Smooth scroll configurado');
 });
+
+/**
+ * LISTENER PARA MUDANÇAS DE TEMA
+ * Exemplo de como outros scripts podem reagir a mudanças de tema
+ */
+document.addEventListener('themeChanged', (e) => {
+  const { theme } = e.detail;
+  
+  // Aqui você pode adicionar lógica adicional quando o tema muda
+  // Por exemplo: atualizar gráficos, mapas, etc.
+  
+  console.log(`🎨 Tema alterado para: ${theme}`);
+});
+
+/**
+ * UTILITÁRIOS
+ * Funções auxiliares que podem ser úteis
+ */
+window.ThemeUtils = {
+  /**
+   * Retorna o tema atual
+   */
+  getCurrentTheme() {
+    return window.themeToggle ? window.themeToggle.getCurrentTheme() : 'light';
+  },
+
+  /**
+   * Define um tema específico
+   */
+  setTheme(theme) {
+    if (window.themeToggle) {
+      window.themeToggle.setTheme(theme);
+    }
+  },
+
+  /**
+   * Verifica se está no tema escuro
+   */
+  isDarkTheme() {
+    return this.getCurrentTheme() === 'dark';
+  },
+
+  /**
+   * Verifica se está no tema claro
+   */
+  isLightTheme() {
+    return this.getCurrentTheme() === 'light';
+  }
+};
 
