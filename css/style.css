@@ -447,9 +447,22 @@ body {
 }
 
 .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-xl);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Alterado de 4 para 3 */
+  gap: 24px; /* Espaçamento entre os cards */
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-grid {
+    grid-template-columns: 1fr; /* 1 coluna em mobile */
+  }
 }
 
 .project-card {
